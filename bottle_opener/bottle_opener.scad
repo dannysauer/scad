@@ -11,7 +11,7 @@ height = (0.11 + .05)*inch;
 base = 1*inch;
 
 module lever(neck, w, h){
-    box_length = 1.5*inch;
+    box_length = 0.5*inch;
     union(){
         translate([box_length/2,0,0]){
             _wedge(neck, w, h);
@@ -26,7 +26,7 @@ module lever(neck, w, h){
 module _wedge(neck, w, h){
     intersection(){
         linear_extrude(h)
-            circle(d=1.5*w);
+            circle(d=1.25*w);
         union(){
             _real_wedge(neck,w,h);
             mirror(Y)
@@ -44,6 +44,8 @@ module _real_wedge(n,w,h){
 module _box(l, w, h, n){
     linear_extrude(h){
         difference(){
+            // do union of hook and square here
+            // that way the hole can eat into the hook
             square(size=[l,w], center=true);
             union(){
                 circle(d=n);
@@ -68,7 +70,7 @@ module _hook(w, h){
             translate([-1*(w-t),0,0]){
                 // vertical filler below hook
                 difference(){
-                    square(size=[w,w/2], center=false);
+                    square(size=[w-t,w/2], center=false);
                     circle(r=(w/2)-t);
                 }
                 // top of hook
