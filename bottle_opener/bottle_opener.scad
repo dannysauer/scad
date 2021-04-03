@@ -1,5 +1,7 @@
 /*
- Tool to open Beths mecine bottle
+ Tool to open Beth's mecine bottle
+ 
+ Makes heavy use of linear extrude instead of cube/cylinder.  Deal with it.
 */
 include <MCAD/units.scad>
 use <MCAD/libtriangles.scad>
@@ -22,9 +24,15 @@ module lever(neck, w, h){
 }
 
 module _wedge(neck, w, h){
-    _real_wedge(neck,w,h);
-    mirror(Y)
-      _real_wedge(neck,w,h);
+    intersection(){
+        linear_extrude(h)
+            circle(d=1.5*w);
+        union(){
+            _real_wedge(neck,w,h);
+            mirror(Y)
+              _real_wedge(neck,w,h);
+        }
+    }
 }
 
 module _real_wedge(n,w,h){
@@ -38,7 +46,7 @@ module _box(l, w, h, n){
         difference(){
             square(size=[l,w], center=true);
             union(){
-                circle(n/2);
+                circle(d=n);
                 translate([l/4,0,0])
                     square(size=[l/2,n], center=true);
             }
@@ -52,7 +60,7 @@ module _hook(w, h){
         union(){
             // curved base
             intersection(){
-                circle(w/2, center=true);
+                circle(d=w);
                 translate([-1*w/2,0,0])
                     square(size=[w,w], center=true);
             }
@@ -61,20 +69,20 @@ module _hook(w, h){
                 // vertical filler below hook
                 difference(){
                     square(size=[w,w/2], center=false);
-                    circle((w/2)-t, center=true);
+                    circle(r=(w/2)-t);
                 }
                 // top of hook
                 difference(){
                     intersection(){
-                        circle(w/2, center=true);
+                        circle(d=w);
                         translate([-1*w/2,0,0])
                             square(size=[w,w], center=true);
                     }
-                    circle((w/2)-t, center=true);
+                    circle(r=(w/2)-t);
                 }
                 // curve at end of hook
                 translate([0,-1*((w/2)-(t/2)),0])
-                    circle(t/2, center=true);
+                    circle(d=t);
             }
         }
     }
